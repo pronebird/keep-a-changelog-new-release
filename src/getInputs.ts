@@ -8,6 +8,7 @@ interface Inputs {
   owner: string;
   repo: string;
   changelogPath: string;
+  skipLinksToTags: boolean;
 }
 
 function parseTagAndVersion(): [string, string] {
@@ -32,10 +33,12 @@ export default function getInputs(): Inputs {
 
   const dateInput = getInput("date");
   const date = formatDate(
-    dateInput ? new Date(Date.parse(dateInput)) : new Date()
+    dateInput ? new Date(Date.parse(dateInput)) : new Date(),
   );
   const changelogPath = getInput("changelogPath") || "./CHANGELOG.md";
   const githubRepository = process.env.GITHUB_REPOSITORY;
+  const skipLinksToTags =
+    (getInput("skipLinksToTags") || "").toLowerCase() === "true";
 
   if (!githubRepository) {
     throw new Error("GITHUB_REPOSITORY is not set");
@@ -49,6 +52,7 @@ export default function getInputs(): Inputs {
     date,
     owner,
     repo,
-    changelogPath
+    changelogPath,
+    skipLinksToTags,
   };
 }
